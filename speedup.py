@@ -38,7 +38,7 @@ def inputToOutputFilename(filename):
     return filename[:dotIndex]+"_ALTERED"+filename[dotIndex:]
 
 def main(args):
-
+    count = 0
     frameRate = args.frame_rate
     SAMPLE_RATE = args.sample_rate
     SILENT_THRESHOLD = args.silent_threshold
@@ -53,10 +53,10 @@ def main(args):
     if args.url != None:
         INPUT_FILE = downloadFile(args.url)
     else:
-        INPUT_FILE = args.input_file
+        INPUT_FILE = args.input
         
-    if len(args.output_file) >= 1:
-        OUTPUT_FILE = args.output_file
+    if len(args.output) >= 1:
+        OUTPUT_FILE = args.output
     else:
         OUTPUT_FILE = inputToOutputFilename(INPUT_FILE)
 
@@ -148,7 +148,8 @@ def main(args):
             if didItWork:
                 lastExistingFrame = inputFrame
             else:
-                copyFrame(lastExistingFrame,outputFrame)
+                copyFrame(TEMP_FOLDER,lastExistingFrame,outputFrame)
+                count + 1
 
         outputPointer = endPointer
 
@@ -156,14 +157,15 @@ def main(args):
 
     command = "ffmpeg -framerate "+str(frameRate)+" -i "+TEMP_FOLDER+"/newFrame%06d.jpg -i "+TEMP_FOLDER+"/audioNew.wav -strict -2 "+OUTPUT_FILE
     subprocess.call(command, shell=True)
-
+    
+    print(count)
     rmtree(TEMP_FOLDER,ignore_errors=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Modifies playback speeds when there is sound vs. silence")
-    parser.add_argument('--input_file', type=str,  help="the video file you want modified")
+    parser.add_argument('--input', type=str,  help="the video file you want modified")
     parser.add_argument('--url', type=str, help="A youtube url to download and modify")
-    parser.add_argument('--output_file', type=str, default="", help="Name of the output file. (optional. if not included, input file name modified)")
+    parser.add_argument('--output', type=str, default="", help="Name of the output file. (optional. if not included, input file name modified)")
     parser.add_argument('--silent_threshold', type=float, default=0.03, help="the volume that frames' audio needs to surpass to be consider \"sounded\". It ranges from 0 (silence) to 1 (max volume)")
     parser.add_argument('--sounded_speed', type=float, default=1.00, help="the speed that sounded (spoken) frames should be played at. Typically 1.")
     parser.add_argument('--silent_speed', type=float, default=5.00, help="the speed that silent frames should be played at. 999999 for jumpcutting.")
