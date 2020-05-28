@@ -19,7 +19,7 @@ Modifies playback speeds when there is sound vs. silence
 
 # Repository Files
 - speedup.py : Python script that lets you download videos from youtube or use your own input video and modify the playback speed
--requirements.txt : List of needed python libraries
+- requirements.txt : List of needed python libraries
 
 <a name="dependencies"></a>
 
