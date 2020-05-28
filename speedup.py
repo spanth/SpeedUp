@@ -38,7 +38,6 @@ def inputToOutputFilename(filename):
     return filename[:dotIndex]+"_ALTERED"+filename[dotIndex:]
 
 def main(args):
-    count = 0
     frameRate = args.frame_rate
     SAMPLE_RATE = args.sample_rate
     SILENT_THRESHOLD = args.silent_threshold
@@ -149,7 +148,6 @@ def main(args):
                 lastExistingFrame = inputFrame
             else:
                 copyFrame(TEMP_FOLDER,lastExistingFrame,outputFrame)
-                count + 1
 
         outputPointer = endPointer
 
@@ -158,7 +156,6 @@ def main(args):
     command = "ffmpeg -framerate "+str(frameRate)+" -i "+TEMP_FOLDER+"/newFrame%06d.jpg -i "+TEMP_FOLDER+"/audioNew.wav -strict -2 "+OUTPUT_FILE
     subprocess.call(command, shell=True)
     
-    print(count)
     rmtree(TEMP_FOLDER,ignore_errors=False)
 
 if __name__ == '__main__':
